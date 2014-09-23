@@ -11,6 +11,8 @@ public class Server extends Verticle {
 
 	public void start() {
 		
+		
+		
 		HttpServer server = vertx.createHttpServer();		
 		final Logger log = container.logger();
 
