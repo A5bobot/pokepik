@@ -17,7 +17,7 @@ function loadHeader() {
 	httpHeader.send(JSON.stringify(jsonHeader));
 }
 
-function loadContext() {
+function loadContent() {
 	var httpContent = new XMLHttpRequest;
 	httpContent.onreadystatechange=function()
 	  {
@@ -34,5 +34,5 @@ function loadContext() {
 
 function loadBody() {
 	loadHeader();
-	loadContext();
+	loadContent();
 }
