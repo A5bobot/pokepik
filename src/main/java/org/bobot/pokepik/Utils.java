@@ -15,6 +15,10 @@ public class Utils {
 			propFile="ressources/mongo.properties";
 		}
 		
+		if ("auth".equals(strProp)) {
+			propFile="ressources/auth.properties";
+		}
+		
 		Properties props = new Properties();
 		
 		InputStream input = null;
