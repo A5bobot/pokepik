@@ -3,11 +3,10 @@ package test.java.org.bobot.pokepik;
 import static org.vertx.testtools.VertxAssert.assertEquals;
 import static org.vertx.testtools.VertxAssert.testComplete;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import main.java.org.bobot.pokepik.Utils;
 
 import org.junit.Test;
 import org.vertx.java.core.AsyncResult;
@@ -29,30 +28,15 @@ public class PersistorTest extends TestVerticle {
 	    eb = vertx.eventBus();	    
 	    JsonObject config = new JsonObject();
 	    
-	    Properties props = new Properties();
-	    InputStream input = null;
-	    try {
-			input = new FileInputStream("ressources/mongo.properties");
-			props.load(input);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	    
+	    Properties propsMongo = Utils.getProperties("mongo");
+
 	    config.putString("address", "test.persistor");
-	    config.putString("db_name", props.getProperty("vertx.mongo.database"));
-	    config.putString("host", props.getProperty("vertx.mongo.host"));
-	    config.putNumber("port", Integer.valueOf(props.getProperty("vertx.mongo.port")));
+	    config.putString("db_name", propsMongo.getProperty("vertx.mongo.database"));
+	    config.putString("host", propsMongo.getProperty("vertx.mongo.host"));
+	    config.putNumber("port", Integer.valueOf(propsMongo.getProperty("vertx.mongo.port")));
 	    
-	    String username = props.getProperty("vertx.mongo.username");
-	    String password = props.getProperty("vertx.mongo.password");
+	    String username = propsMongo.getProperty("vertx.mongo.username");
+	    String password = propsMongo.getProperty("vertx.mongo.password");
 	    
 	    if (null != username) {
 	      config.putString("username", username);
