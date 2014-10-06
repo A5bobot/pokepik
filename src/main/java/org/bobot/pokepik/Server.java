@@ -1,5 +1,7 @@
 package main.java.org.bobot.pokepik;
 
+import java.util.Map;
+
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServer;
@@ -26,21 +28,23 @@ public class Server extends Verticle {
 		    }
 		});
 		
-		routeMatcher.get("/header", new Handler<HttpServerRequest>() {
-		    public void handle(HttpServerRequest req) {
 		
+		routeMatcher.post("/header", new Handler<HttpServerRequest>() {
+		    public void handle(HttpServerRequest req) {
+		    	
+//		    	for (Map.Entry<String, String> entry : req.headers()) {
+//		            System.out.println(entry.getKey() + ":" + entry.getValue());
+//		          }
+		    	
 		    	req.bodyHandler(new Handler<Buffer>() {
-					
-					@Override
-					public void handle(Buffer buff) {
-						System.out.println(buff.toString());
-					}
-				});
-		    	
-		    	System.out.println("req.params().get(\"idsess\") = " + req.params().get("idsess"));
-		    	
-//		    	JsonObject jObj = new JsonObject(req.params().get("idsess"));
-//		    	System.out.println("jObj = " + jObj.toString());
+		            public void handle(Buffer data) {
+		            
+		            	JsonObject jsonBody = new JsonObject(data.toString());
+		            	
+		            	String idSession = jsonBody.getString("IDSESSION");
+		            	System.out.println("idSession -> " + idSession);
+		            }
+		          });
 		    	
 		    	req.response().sendFile("web/header.html");
 		    }

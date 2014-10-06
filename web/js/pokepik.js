@@ -12,7 +12,7 @@ function loadHeader() {
 	    }
 	  }
 	var jsonHeader = { "IDSESSION" : "toto" };
-	httpHeader.open("GET","/header",true);
+	httpHeader.open("POST","/header",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
 	httpHeader.send(JSON.stringify(jsonHeader));
 	console.log(JSON.stringify(jsonHeader));
