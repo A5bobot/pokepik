@@ -1,9 +1,11 @@
 package main.java.org.bobot.pokepik;
 
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Verticle;
 
@@ -26,6 +28,20 @@ public class Server extends Verticle {
 		
 		routeMatcher.get("/header", new Handler<HttpServerRequest>() {
 		    public void handle(HttpServerRequest req) {
+		
+		    	req.bodyHandler(new Handler<Buffer>() {
+					
+					@Override
+					public void handle(Buffer buff) {
+						System.out.println(buff.toString());
+					}
+				});
+		    	
+		    	System.out.println("req.params().get(\"idsess\") = " + req.params().get("idsess"));
+		    	
+//		    	JsonObject jObj = new JsonObject(req.params().get("idsess"));
+//		    	System.out.println("jObj = " + jObj.toString());
+		    	
 		    	req.response().sendFile("web/header.html");
 		    }
 		});

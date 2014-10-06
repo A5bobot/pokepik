@@ -11,10 +11,11 @@ function loadHeader() {
 	    	document.getElementById("Header").innerHTML=httpHeader.responseText;
 	    }
 	  }
-	var jsonHeader = { 'IDSESSION' : 'toto' };
+	var jsonHeader = { "IDSESSION" : "toto" };
 	httpHeader.open("GET","/header",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
 	httpHeader.send(JSON.stringify(jsonHeader));
+	console.log(JSON.stringify(jsonHeader));
 }
 
 function loadContent() {
