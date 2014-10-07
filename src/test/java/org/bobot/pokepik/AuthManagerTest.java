@@ -115,7 +115,23 @@ public class AuthManagerTest extends TestVerticle {
 				System.out.println("reply : " + reply.body().toString());
 				System.out.println("sessionID = " + reply.body().getString("sessionID"));
 				
-				assertEquals("ok", reply.body().getString("status"));
+				String sessionId = reply.body().getString("sessionID");
+				
+				JsonObject jsonGetUserName = new JsonObject()
+				.putString("sessionID", sessionId);
+				
+				eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise", jsonGetUserName, new Handler<Message<JsonObject>>() {
+					@Override
+					public void handle(Message<JsonObject> replyAuthorise) {
+					
+						System.out.println("Username = " + replyAuthorise.body().getString("username"));
+						
+						assertEquals("olivier", replyAuthorise.body().getString("username"));
+					}
+					
+				});
+				
+				
 				
 				// Delete user test				
 				JsonObject jsonDeleteUserTest = new JsonObject()

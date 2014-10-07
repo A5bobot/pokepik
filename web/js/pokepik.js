@@ -11,7 +11,7 @@ function loadHeader() {
 	    	document.getElementById("Header").innerHTML=httpHeader.responseText;
 	    }
 	  }
-	var jsonHeader = { "IDSESSION" : "toto" };
+	var jsonHeader = { "IDSESSION" : "f4be24d7-312f-489c-883a-78f5ca58b3f6" };
 	httpHeader.open("POST","/header",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
 	httpHeader.send(JSON.stringify(jsonHeader));
