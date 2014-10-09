@@ -2,38 +2,58 @@
  * 
  */
 
-function loadHeader() {
+function logout() {
+	var jsonLogout = { "sessionID" : localStorage.getItem("pokepikSessionId") };
+	var httpHeader = new XMLHttpRequest;
+	httpHeader.onreadystatechange=function()
+	  {
+	  if (httpHeader.readyState==4 && httpHeader.status==200) {
+		 	  localStorage.clear();
+			  document.getElementById("Header").innerHTML = httpHeader.responseText;
+	    }
+	  }
+	httpHeader.open("POST","/logout",true);
+	httpHeader.setRequestHeader("Content-type","application/json");
+	httpHeader.send(JSON.stringify(jsonLogout));
+}
+
+function checkSession() {
+	var sessId = localStorage.getItem("pokepikSessionId");
+	if (sessId) {
+		var jsonSess = { "sessionID" : sessId };
+		var httpHeader = new XMLHttpRequest;
+		httpHeader.onreadystatechange=function()
+		  {
+		  if (httpHeader.readyState==4 && httpHeader.status==200)
+		    {	
+		    		document.getElementById("Header").innerHTML = httpHeader.responseText;
+		    		document.getElementById("lblUsername").innerHTML = httpHeader.getResponseHeader("username");
+		    }
+		  }
+		httpHeader.open("POST","/sess",true);
+		httpHeader.setRequestHeader("Content-type","application/json");
+		httpHeader.send(JSON.stringify(jsonSess));
+	}
+}
+
+function auth() {	
+	var jsonAuth = { "username" : document.getElementById("username").value, "password" : document.getElementById("password").value }
 	var httpHeader = new XMLHttpRequest;
 	httpHeader.onreadystatechange=function()
 	  {
 	  if (httpHeader.readyState==4 && httpHeader.status==200)
-	    {
-	    	document.getElementById("Header").innerHTML=httpHeader.responseText;
+	    {	
+	    	var jsonResponse = JSON.parse(httpHeader.responseText);
+	    	    	
+	    	if ("ok" == jsonResponse.status) {
+	    		localStorage.setItem("pokepikSessionId", jsonResponse.sessionID);
+	    		checkSession();
+	    	} else {
+	    		location.reload();
+	    	}
 	    }
 	  }
-	var jsonHeader = { "IDSESSION" : "f4be24d7-312f-489c-883a-78f5ca58b3f6" };
-	httpHeader.open("POST","/header",true);
+	httpHeader.open("POST","/auth",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
-	httpHeader.send(JSON.stringify(jsonHeader));
-	console.log(JSON.stringify(jsonHeader));
-}
-
-function loadContent() {
-	var httpContent = new XMLHttpRequest;
-	httpContent.onreadystatechange=function()
-	  {
-	  if (httpContent.readyState==4 && httpContent.status==200)
-	    {
-	    	document.getElementById("Content").innerHTML=httpContent.responseText;
-	    }
-	  }
-	var jsonHeader = { 'IDSESSION' : 'toto' };
-	httpContent.open("GET","/content",true);
-	httpContent.setRequestHeader("Content-type","application/json");
-	httpContent.send(JSON.stringify(jsonHeader));
-}
-
-function loadBody() {
-	loadHeader();
-	loadContent();
+	httpHeader.send(JSON.stringify(jsonAuth));
 }

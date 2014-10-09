@@ -73,75 +73,14 @@ public class Server extends Verticle {
 		      });
 	    
 		HttpServer server = vertx.createHttpServer();		
+		
 		final Logger log = container.logger();
 
 		RouteMatcher routeMatcher = new RouteMatcher();
 		
-		log.info("Server.java - before route matcher");
-		
 		routeMatcher.get("/", new Handler<HttpServerRequest>() {
 		    public void handle(HttpServerRequest req) {
 		        req.response().sendFile("web/index.html");
-		    }
-		});
-		
-		
-		routeMatcher.post("/header", new Handler<HttpServerRequest>() {
-		    public void handle(HttpServerRequest req) {
-		    	
-//		    	for (Map.Entry<String, String> entry : req.headers()) {
-//		            System.out.println(entry.getKey() + ":" + entry.getValue());
-//		          }
-		    	
-		    	final JsonObject jsonResponse = new JsonObject();
-		    	
-		    	req.bodyHandler(new Handler<Buffer>() {
-		            public void handle(Buffer data) {
-		            
-		            	// Si IDSESSION null ou incorrect, envoie formulaire authentification
-		            	
-		            	JsonObject jsonBody = new JsonObject(data.toString());
-		            	
-		            	String idSession = jsonBody.getString("IDSESSION");
-		            	System.out.println("DEBUG - idSession -> " + idSession);
-		            	
-		            	// Si IDSESSION null : 
-		            	if (null == idSession) {
-		            		System.out.println("TODO - ajout json ko response");
-		            		jsonResponse.putString("status", "denied");
-		            	} else {
-		            		// Si IDSESSION not null
-		            			// check idSession dans base
-		            			JsonObject jsonReqSession = new JsonObject().putString("sessionID", idSession);
-		            			
-		            			System.out.println("DEBUG - jsonReqSession : " + jsonReqSession.toString());
-		            			System.out.println("DEBUG - " + propsAuth.getProperty("vertx.auth.address") + ".authorise");
-		            			
-		            			eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise",jsonReqSession, new Handler<Message<JsonObject>>() {
-									@Override
-									public void handle(Message<JsonObject> message) {
-										String strRespSessionStatus = message.body().getString("status");
-										System.out.println("Reponse auth : " + strRespSessionStatus);
-									}
-		            			});
-		            			
-		            			// Envoie json sur bus pour Auth-manager
-		            			
-		            			// Si idSession incorrect : req.response().sendFile("web/header.html")
-		            		
-		            	}
-		            	
-		            }
-		          });
-		    	
-		    	req.response().sendFile("web/header.html");
-		    	req.response().close();
-		    }
-		});
-		
-		routeMatcher.get("/content", new Handler<HttpServerRequest>() {
-		    public void handle(HttpServerRequest req) {
-		        req.response().sendFile("web/content.html");
 		    }
 		});
 		
@@ -155,10 +94,79 @@ public class Server extends Verticle {
 		    }
 		});
 		
-		log.info("Server.java - after route matcher");
+		routeMatcher.post("/sess", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest req) {
+				req.bodyHandler(new Handler<Buffer>() {
+					@Override
+					public void handle(Buffer data) {
+						JsonObject jsonBody = new JsonObject(data.toString());
+						
+						eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise",jsonBody, new Handler<Message<JsonObject>>() {
+							@Override
+							public void handle(Message<JsonObject> message) {
+								String strMessage = message.body().toString();
+								// Envoie reponse
+								if ("ok".equals(message.body().getString("status"))) {
+									req.response().headers().set("username", message.body().getString("username"));
+								}
+								req.response().sendFile("web/header.html");
+								req.response().close();
+							}});
+					}
+					
+				});
+			}});
 		
-		server.requestHandler(routeMatcher).listen(8080, "localhost");
+		routeMatcher.post("/logout", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest req) {
+				req.bodyHandler(new Handler<Buffer>() {
+					@Override
+					public void handle(Buffer data) {
+						JsonObject jsonBody = new JsonObject(data.toString());
+						eb.send(propsAuth.getProperty("vertx.auth.address") + ".logout",jsonBody, new Handler<Message<JsonObject>>() {
+							@Override
+							public void handle(Message<JsonObject> message) {
+								String strMessage = message.body().toString();
+								// Envoie reponse
+								req.response().sendFile("web/header_auth.html");
+								req.response().close();
+							}});
+					}
+					
+				});
+			}});
+		
+		routeMatcher.post("/auth", new Handler<HttpServerRequest>() {
+		    public void handle(final HttpServerRequest req) {
+		    	
+		    	req.bodyHandler(new Handler<Buffer>() {
+		            public void handle(Buffer data) {
+		            	
+		            	JsonObject jsonBody = new JsonObject(data.toString());
+		            	
+		            	//TODO : controles username & password
+		            	
+		            	eb.send(propsAuth.getProperty("vertx.auth.address") + ".login", jsonBody, new Handler<Message<JsonObject>>() {
 
+							@Override
+							public void handle(Message<JsonObject> message) {
+								String strMessage = message.body().toString();
+								
+								// Envoie reponse
+								req.response().setChunked(true);
+								req.response().end(strMessage);
+								req.response().close();
+							}} );
+//		            			
+//		            		eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise",jsonReqSession, new Handler<Message<JsonObject>>() {
+		            }
+		          });
+		    }
+		});
+
+		server.requestHandler(routeMatcher).listen(8080, "localhost");
 	}
 
 }

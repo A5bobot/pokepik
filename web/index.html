@@ -5,11 +5,23 @@
 <title>Pok&Pik</title>
 <script type="text/javascript" src="js/pokepik.js"></script>
 </head>
-<body onload="loadBody()">	
+<body onload="checkSession()">	
 	<div id="Header">
+	<fieldset><legend>Authentification</legend>
+	<table>
+	<tr>
+		<td><label for="username">Username</label></td><td><input name="username" id="username" type="text" autofocus></td>
+		<td><label for="password">Password</label></td><td><input name="password" id="password" type="password"></td>
+		<td><input id="authSubmit" type="button" onclick="auth()" value="Login"></td>
+		<td>Served by vertx !</td>
+	</tr>
+	</table>
+	</fieldset>
 	</div>
 	
 	<div id="Content">
+	<br>
+	<p align="center">Bienvenue sur PokePik</p>
 	</div>
 	
 	<div id="Footer">

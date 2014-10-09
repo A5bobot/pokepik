@@ -74,8 +74,8 @@ public class AuthManagerTest extends TestVerticle {
 	@Test
 	public void testConfigAuth() {
 		
-		String username="olivier";
-		String password="testpwdolivier";
+		String username="usertest";
+		String password="testpw";
 		
 		// Insert user test
 		final JsonObject docUserTest = new JsonObject()
@@ -86,6 +86,7 @@ public class AuthManagerTest extends TestVerticle {
 		.putString("collection", propsAuth.getProperty("vertx.auth.coll"))
 		.putString("action", "save")
 		.putObject("document", docUserTest);
+		System.out.println("docUserTest : " + jsonInsertUserTest.toString());
 		
 		eb.send(propsMongo.getProperty("vertx.mongo.address"), jsonInsertUserTest);
 		
@@ -130,7 +131,6 @@ public class AuthManagerTest extends TestVerticle {
 					}
 					
 				});
-				
 				
 				
 				// Delete user test				
