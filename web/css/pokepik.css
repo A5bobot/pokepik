@@ -1,0 +1,81 @@
+body{	
+	background: linear-gradient(to left,  rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+}
+
+fieldset{
+	border:0;
+	height:90%;
+	width:90%;
+	margin:5%;
+	padding:0;
+	position:absolute;
+}
+
+.login table{
+	position:relative;
+	height:90%;
+	width:90%;
+}.login tr{
+	height:100px;
+	text-align: center;
+}.login tbody{
+	height:80%;
+}.login input[type="text"],input[type="password"]{
+	background-color: #cfdcec;
+	width: 240px;
+	height: 50px;
+	border-bottom-left-radius:10px;
+	border-bottom-right-radius:10px;
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+	font-size: 2em;
+	text-align: center;
+}.login input[type="button"] {
+	font-size: 1.1em;
+	width: 80px;
+	height:80px;
+    border-radius: 50%;
+	border:4px solid #cfdcec;
+    overflow:hidden;
+    
+    background: #4679BD; 
+    box-shadow: 0 0 3px gray;
+}.login input[type="button"]:hover{
+	background:#30588e;
+}
+
+.round-button {
+	width:25%;
+}
+.round-button-circle {
+	width: 20%;
+	height:0;
+	padding-bottom: 100%;
+    border-radius: 50%;
+	border:10px solid #cfdcec;
+    overflow:hidden;
+    text-align:center;
+    vertical-align: middle;
+    
+    background: #4679BD; 
+    box-shadow: 0 0 3px gray;
+}
+.round-button-circle:hover {
+	background:#30588e;
+}
+.round-button a {
+    display:block;
+	float:left;
+	width:100%;
+	padding-top:50%;
+    padding-bottom:50%;
+	line-height:1em;
+	margin-top:-0.5em;
+    
+	text-align:center;
+	color:#e2eaf3;
+    font-family:Verdana;
+    font-size:1.2em;
+    font-weight:bold;
+    text-decoration:none;
+}
