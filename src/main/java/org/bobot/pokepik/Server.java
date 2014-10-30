@@ -101,7 +101,7 @@ public class Server extends Verticle {
 					@Override
 					public void handle(Buffer data) {
 						JsonObject jsonBody = new JsonObject(data.toString());
-						
+						System.out.println("jsonBody : " + jsonBody);
 						eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise",jsonBody, new Handler<Message<JsonObject>>() {
 							@Override
 							public void handle(Message<JsonObject> message) {
@@ -109,8 +109,11 @@ public class Server extends Verticle {
 								// Envoie reponse
 								if ("ok".equals(message.body().getString("status"))) {
 									req.response().headers().set("username", message.body().getString("username"));
+									req.response().sendFile("web/mainboard.html");
+								} else {
+									req.response().sendFile("web/login.html");
 								}
-								req.response().sendFile("web/header.html");
+								
 								req.response().close();
 							}});
 					}
@@ -165,6 +168,25 @@ public class Server extends Verticle {
 		          });
 		    }
 		});
+		
+		routeMatcher.post("/newUser", new Handler<HttpServerRequest>() {
+		    public void handle(final HttpServerRequest req) {
+		    	
+		    	req.bodyHandler(new Handler<Buffer>() {
+		            public void handle(Buffer data) {
+		            	
+		            	JsonObject jsonBody = new JsonObject(data.toString());
+		            	
+		            	if ("init".equals(jsonBody.getString("newUserRequestType"))) {
+		            		System.out.println("DEBUG - /newUser -> jsonBody = " + jsonBody);
+		            		req.response().sendFile("web/newuser.html");
+		            	}
+		            	req.response().close();
+		            }
+		          });
+		    }
+		});
+
 
 		server.requestHandler(routeMatcher).listen(8080, "localhost");
 	}
