@@ -101,11 +101,17 @@ public class Server extends Verticle {
 					@Override
 					public void handle(Buffer data) {
 						JsonObject jsonBody = new JsonObject(data.toString());
-						System.out.println("jsonBody : " + jsonBody);
+						System.out.println("/sess -> jsonBody : " + jsonBody);
+						
+						if ("givemeoneplease".equals(jsonBody.getString("sessionID"))) {
+							req.response().sendFile("web/login.html");
+							req.response().close();
+						} else 	{					
 						eb.send(propsAuth.getProperty("vertx.auth.address") + ".authorise",jsonBody, new Handler<Message<JsonObject>>() {
 							@Override
 							public void handle(Message<JsonObject> message) {
-								String strMessage = message.body().toString();
+								System.out.println("/sess -> message : " + message.body());
+								req.response().headers().set("status", message.body().getString("status"));
 								// Envoie reponse
 								if ("ok".equals(message.body().getString("status"))) {
 									req.response().headers().set("username", message.body().getString("username"));
@@ -116,6 +122,7 @@ public class Server extends Verticle {
 								
 								req.response().close();
 							}});
+						}
 					}
 					
 				});
@@ -133,7 +140,7 @@ public class Server extends Verticle {
 							public void handle(Message<JsonObject> message) {
 								String strMessage = message.body().toString();
 								// Envoie reponse
-								req.response().sendFile("web/header_auth.html");
+								req.response().sendFile("web/login.html");
 								req.response().close();
 							}});
 					}
@@ -178,8 +185,30 @@ public class Server extends Verticle {
 		            	JsonObject jsonBody = new JsonObject(data.toString());
 		            	
 		            	if ("init".equals(jsonBody.getString("newUserRequestType"))) {
-		            		System.out.println("DEBUG - /newUser -> jsonBody = " + jsonBody);
+		            		System.out.println("/newUser -> jsonBody = " + jsonBody);
 		            		req.response().sendFile("web/newuser.html");
+		            	} else if ("submit".equals(jsonBody.getString("newUserRequestType"))) {
+		            		System.out.println("/newUser -> jsonBody = " + jsonBody);
+		            		
+		            		String username=jsonBody.getString("login");
+		            		String password=jsonBody.getString("pwd1");
+		            		
+		            		// Insert user test
+		            		final JsonObject docUser = new JsonObject()
+		                	.putString("username", username)
+		                	.putString("password", password);
+		                	
+		            		JsonObject jsonInsertUser = new JsonObject()
+		            		.putString("collection", propsAuth.getProperty("vertx.auth.coll"))
+		            		.putString("action", "save")
+		            		.putObject("document", docUser);
+		            		
+		            		eb.send(propsMongo.getProperty("vertx.mongo.address"), jsonInsertUser);
+		            		
+		            		req.response().headers().set("username", username);
+		            		req.response().sendFile("web/login.html");
+		            	} else {
+		            		req.response().sendFile("web/login.html");
 		            	}
 		            	req.response().close();
 		            }
