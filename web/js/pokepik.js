@@ -9,7 +9,7 @@ function logout() {
 	  {
 	  if (httpHeader.readyState==4 && httpHeader.status==200) {
 		 	  localStorage.clear();
-			  document.getElementById("Header").innerHTML = httpHeader.responseText;
+			  document.getElementById("Content").innerHTML = httpHeader.responseText;
 	    }
 	  }
 	httpHeader.open("POST","/logout",true);
@@ -27,10 +27,8 @@ function checkSession() {
 		httpHeader.onreadystatechange=function()
 		  {
 		  if (httpHeader.readyState==4 && httpHeader.status==200)
-		    {	
-//			  console.log("responseText : " + httpHeader.responseText);
+		    {
 		    		document.getElementById("Content").innerHTML = httpHeader.responseText;
-//		    		document.getElementById("lblUsername").innerHTML = httpHeader.getResponseHeader("username");
 		    }
 		  }
 		httpHeader.open("POST","/sess",true);
@@ -40,7 +38,7 @@ function checkSession() {
 }
 
 function auth() {	
-	var jsonAuth = { "username" : document.getElementById("username").value, "password" : document.getElementById("password").value };
+	var jsonAuth = { "username" : document.getElementById("username").value, "password" : md5(document.getElementById("password").value) };
 	var httpHeader = new XMLHttpRequest;
 	httpHeader.onreadystatechange=function()
 	  {
@@ -75,4 +73,27 @@ function newUser() {
 	httpHeader.open("POST","/newUser",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
 	httpHeader.send(JSON.stringify(jsonNU));
+}
+
+function subNewUser() {
+	var jsonNUSub = {
+			"newUserRequestType" : "submit",
+			"login" : document.getElementById("username").value,
+			"pwd1" : md5(document.getElementById("password1").value)
+		};
+	var httpHeader = new XMLHttpRequest;
+	httpHeader.onreadystatechange=function()
+	  {
+	  if (httpHeader.readyState==4 && httpHeader.status==200)
+	    {	
+		  console.log("responseText : " + httpHeader.responseText);
+		  document.getElementById("Content").innerHTML = httpHeader.responseText;
+		  document.getElementById("username").value = httpHeader.getResponseHeader("username");
+		  document.getElementById("password").focus();
+	    }
+	  }
+	httpHeader.open("POST","/newUser",true);
+	httpHeader.setRequestHeader("Content-type","application/json");
+	httpHeader.send(JSON.stringify(jsonNUSub));
+	
 }
