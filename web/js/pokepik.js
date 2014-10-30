@@ -19,25 +19,28 @@ function logout() {
 
 function checkSession() {
 	var sessId = localStorage.getItem("pokepikSessionId");
-	if (sessId) {
+	if (! sessId) {
+		sessId="givemeoneplease";
+	}
 		var jsonSess = { "sessionID" : sessId };
 		var httpHeader = new XMLHttpRequest;
 		httpHeader.onreadystatechange=function()
 		  {
 		  if (httpHeader.readyState==4 && httpHeader.status==200)
 		    {	
-		    		document.getElementById("Header").innerHTML = httpHeader.responseText;
-		    		document.getElementById("lblUsername").innerHTML = httpHeader.getResponseHeader("username");
+//			  console.log("responseText : " + httpHeader.responseText);
+		    		document.getElementById("Content").innerHTML = httpHeader.responseText;
+//		    		document.getElementById("lblUsername").innerHTML = httpHeader.getResponseHeader("username");
 		    }
 		  }
 		httpHeader.open("POST","/sess",true);
 		httpHeader.setRequestHeader("Content-type","application/json");
 		httpHeader.send(JSON.stringify(jsonSess));
-	}
+	
 }
 
 function auth() {	
-	var jsonAuth = { "username" : document.getElementById("username").value, "password" : document.getElementById("password").value }
+	var jsonAuth = { "username" : document.getElementById("username").value, "password" : document.getElementById("password").value };
 	var httpHeader = new XMLHttpRequest;
 	httpHeader.onreadystatechange=function()
 	  {
@@ -56,4 +59,20 @@ function auth() {
 	httpHeader.open("POST","/auth",true);
 	httpHeader.setRequestHeader("Content-type","application/json");
 	httpHeader.send(JSON.stringify(jsonAuth));
+}
+
+function newUser() {	
+	var jsonNU = { "newUserRequestType" : "init" };
+	var httpHeader = new XMLHttpRequest;
+	httpHeader.onreadystatechange=function()
+	  {
+	  if (httpHeader.readyState==4 && httpHeader.status==200)
+	    {	
+		  console.log("responseText : " + httpHeader.responseText);
+		  document.getElementById("Content").innerHTML = httpHeader.responseText;
+	    }
+	  }
+	httpHeader.open("POST","/newUser",true);
+	httpHeader.setRequestHeader("Content-type","application/json");
+	httpHeader.send(JSON.stringify(jsonNU));
 }
