@@ -1,9 +1,11 @@
 	<div>
+	<form>
 	<fieldset>
 	<div class="login">
 		<table>
 		<tbody>
 			<tr><td><input name="username" id="username" type="text" placeholder="Login" autofocus></td></tr>
+			<tr><td><input name="email" id="email" type="text" required="true" pattern="[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([_\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})" placeholder="Mail"></td></tr>
 			<tr><td><input name="password1" id="password1" type="password" placeholder="Enter password"></td></tr>
 			<tr><td><input name="password2" id="password2" type="password" placeholder="Confirm password"></td></tr>
 			<tr><td><input id="authSubmit" type="button" onclick="subNewUser()" value="Submit"></td></tr>
@@ -11,4 +13,5 @@
 		</table>
 	</div>
 	</fieldset>
+	</form>
 	</div>

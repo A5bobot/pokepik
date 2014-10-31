@@ -1,12 +1,12 @@
 	<div>
-	<form id="form_login" method="post" name="form_login">
+	<form id="loginForm">
 	<fieldset>
 	<div class="login">
 		<table>
 		<tbody>
-			<tr><td><input name="username" id="username" type="text" required="required" placeholder="Login" autofocus></td></tr>
-			<tr><td><input name="password" id="password" type="password" required="required" placeholder="Password"></td></tr>
-			<tr><td><input id="authSubmit" type="button" onclick="auth()" value="Login"></td></tr>
+			<tr><td><input name="username" id="username" type="text" placeholder="Login" required></td></tr>
+			<tr><td><input name="password" id="password" type="password" placeholder="Password"></td></tr>
+			<tr><td><input id="authSubmit" type="submit" onclick="auth()" value="Login"></td></tr>
 			<tr><td><input id="authSubmit" type="button" onclick="newUser()" value="New"></td></tr>
 		</tbody>
 		</table>

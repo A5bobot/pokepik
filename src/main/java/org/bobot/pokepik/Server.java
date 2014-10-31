@@ -192,11 +192,13 @@ public class Server extends Verticle {
 		            		
 		            		String username=jsonBody.getString("login");
 		            		String password=jsonBody.getString("pwd1");
+		            		String email=jsonBody.getString("email");
 		            		
 		            		// Insert user test
 		            		final JsonObject docUser = new JsonObject()
 		                	.putString("username", username)
-		                	.putString("password", password);
+		                	.putString("password", password)
+		                	.putString("email", email);
 		                	
 		            		JsonObject jsonInsertUser = new JsonObject()
 		            		.putString("collection", propsAuth.getProperty("vertx.auth.coll"))

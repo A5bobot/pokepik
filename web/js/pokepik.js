@@ -79,6 +79,7 @@ function subNewUser() {
 	var jsonNUSub = {
 			"newUserRequestType" : "submit",
 			"login" : document.getElementById("username").value,
+			"email" : document.getElementById("email").value,
 			"pwd1" : md5(document.getElementById("password1").value)
 		};
 	var httpHeader = new XMLHttpRequest;
